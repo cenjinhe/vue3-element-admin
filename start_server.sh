@@ -10,6 +10,7 @@ RUN_PORT="8001"
 # 检查node是否可用
 if ! command -v node &> /dev/null; then
     echo "未找到node，请先安装node"
+    exit 0
 fi
 
 # ===================== 安装依赖（若不存在） =====================
