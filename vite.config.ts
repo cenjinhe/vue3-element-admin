@@ -81,7 +81,7 @@ export default defineConfig(({ command, mode }) => {
       })
     ],
     server: {
-      host: 'localhost',
+      host: '127.0.0.1',
       port: 8001,
       proxy: {
         '/api-test': {
