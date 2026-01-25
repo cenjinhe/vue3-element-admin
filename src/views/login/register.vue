@@ -31,7 +31,6 @@
             tabindex="1"
             autocomplete="new-password"
             size="large"
-            clearable
             readonly
             @focus="e => e.target.removeAttribute('readonly')"
           />
@@ -39,24 +38,28 @@
         <el-form-item label="密码" prop="password">
           <el-input
             v-model="registerForm.password"
-            type="password"
             placeholder="请输入密码"
+            :type="passwordType"
             tabindex="3"
             autocomplete="new-password"
             size="large"
-            clearable
           />
+          <span class="show-pwd" @click="showPwd(0)">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
           <el-input
             v-model="registerForm.confirmPassword"
-            type="password"
             placeholder="请确认密码"
+            :type="confirmPasswordType"
             tabindex="4"
             autocomplete="new-password"
             size="large"
-            clearable
           />
+          <span class="show-pwd" @click="showPwd(1)">
+            <svg-icon :icon-class="confirmPasswordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
         </el-form-item>
         <el-form-item class="register-btn-item">
           <el-button
@@ -82,11 +85,9 @@
 import { register } from '@/api/user'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-// import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
-// const userStore = useUserStore()
 const loading = ref(false)
 const registerFormRef = ref(null)
 
@@ -128,6 +129,15 @@ const registerRules = reactive({
   ]
 })
 
+// 显示密码
+const passwordType = ref('password')
+const confirmPasswordType = ref('password')
+const showPwd = (idx) => {
+  // 切换值
+  if (idx === 0) passwordType.value = passwordType.value === 'password' ? 'text' : 'password'
+  if (idx === 1) confirmPasswordType.value = confirmPasswordType.value === 'password' ? 'text' : 'password'
+}
+
 // 跳转到登录页
 const goToLogin = () => {
   router.push('/login')
@@ -168,7 +178,9 @@ const handleRegister = async () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+$dark_gray: #889aa4;
+
 .register-container {
   width: 100vw;
   height: 100vh;
@@ -189,6 +201,16 @@ const handleRegister = async () => {
   text-align: center;
   margin-bottom: 20px;
   color: #1989fa;
+}
+
+.show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  font-size: 16px;
+  color: $dark_gray;
+  cursor: pointer;
+  user-select: none;
 }
 
 .register-form {

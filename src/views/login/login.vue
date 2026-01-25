@@ -44,9 +44,7 @@
             登录
           </el-button>
         </el-form-item>
-        <!-- 给这个form-item添加自定义class，让这两个元素分别居左和居右 -->
-        <el-form-item class="form-item-actions">
-          <span></span>
+        <el-form-item>
           <el-link type="primary" @click="goToRegister" class="register-link">
             没有账号？去注册
           </el-link>
@@ -181,23 +179,8 @@ $dark_gray: #889aa4;
   user-select: none;
 }
 
-.form-item-actions {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  margin-left: 80px !important;
-}
-
-.form-item-actions :deep(.el-form-item__content) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
 .register-link {
-  float: none;
+  float: right;
 }
 
 .login-btn-item {
