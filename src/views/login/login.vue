@@ -34,13 +34,6 @@
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
-        <!-- 给这个form-item添加自定义class，让这两个元素分别居左和居右 -->
-        <el-form-item class="form-item-actions">
-          <el-checkbox v-model="loginForm.remember">记住密码</el-checkbox>
-          <el-link type="primary" @click="goToRegister" class="register-link">
-            没有账号？去注册
-          </el-link>
-        </el-form-item>
         <el-form-item class="login-btn-item">
           <el-button
             type="primary"
@@ -50,6 +43,13 @@
           >
             登录
           </el-button>
+        </el-form-item>
+        <!-- 给这个form-item添加自定义class，让这两个元素分别居左和居右 -->
+        <el-form-item class="form-item-actions">
+          <span></span>
+          <el-link type="primary" @click="goToRegister" class="register-link">
+            没有账号？去注册
+          </el-link>
         </el-form-item>
       </el-form>
     </el-card>
@@ -64,7 +64,6 @@ import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 // const userStore = useUserStore()
-const loading = ref(false)
 const loginFormRef = ref(null)
 
 // 登录表单
@@ -111,34 +110,35 @@ const goToRegister = () => {
 }
 
 // 登录处理
+const loading = ref(false)
 const handleLogin = async () => {
   // 表单验证
   const valid = await loginFormRef.value.validate()
   if (!valid) return
 
   loading.value = true
-  // try {
-  //   // 调用 Pinia 登录方法
-  //   const success = await userStore.loginAction(loginForm)
-  //   if (success) {
-  //     // 记住密码
-  //     if (loginForm.remember) {
-  //       localStorage.setItem(
-  //         'rememberUser',
-  //         JSON.stringify({
-  //           username: loginForm.username,
-  //           password: loginForm.password
-  //         })
-  //       )
-  //     } else {
-  //       localStorage.removeItem('rememberUser')
-  //     }
-  //     // 跳转到首页
-  //     router.push('/dashboard')
-  //   }
-  // } finally {
-  //   loading.value = false
-  // }
+  try {
+    // 调用 Pinia 登录方法
+    // const success = await userStore.loginAction(loginForm)
+    // if (success) {
+    //   // 记住密码
+    //   if (loginForm.remember) {
+    //     localStorage.setItem(
+    //       'rememberUser',
+    //       JSON.stringify({
+    //         username: loginForm.username,
+    //         password: loginForm.password
+    //       })
+    //     )
+    //   } else {
+    //     localStorage.removeItem('rememberUser')
+    //   }
+      // 跳转到首页
+      router.push('/dashboard')
+    // }
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

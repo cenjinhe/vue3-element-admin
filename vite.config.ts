@@ -84,10 +84,10 @@ export default defineConfig(({ command, mode }) => {
       host: '127.0.0.1',
       port: 8001,
       proxy: {
-        '/api-test': {
-          target: 'https://api.midfar.com/dspt_test/api',
+        '/api': {
+          target: 'http://127.0.0.1:5000',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-test/, ''),
+          // rewrite: (path) => path.replace(/^\/api-test/, ''),
           headers: {
             Cookie: env.VITE_COOKIE
           }

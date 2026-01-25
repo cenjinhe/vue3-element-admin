@@ -79,6 +79,7 @@
 </template>
 
 <script setup>
+import { register } from '@/api/user'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 // import { useUserStore } from '@/store/modules/user'
@@ -91,10 +92,10 @@ const registerFormRef = ref(null)
 
 // 注册表单
 const registerForm = reactive({
-  username: '',
-  phone: '',
-  password: '',
-  confirmPassword: ''
+  username: 'admin',
+  phone: '18767162058',
+  password: '123abc',
+  confirmPassword: '123abc'
 })
 
 // 表单验证规则
@@ -139,21 +140,19 @@ const handleRegister = async () => {
   if (!valid) return
 
   loading.value = true
-  // try {
-  //   // 调用 Pinia 注册方法
-  //   const success = await userStore.registerAction({
-  //     username: registerForm.username,
-  //     phone: registerForm.phone,
-  //     password: registerForm.password,
-  //     smsCode: registerForm.smsCode
-  //   })
-  //   if (success) {
-  //     // 注册成功，跳转到登录页
-  //     router.push('/login')
-  //   }
-  // } finally {
-  //   loading.value = false
-  // }
+  try {
+    const success = await register({
+      'user_name': registerForm.username,
+      'phone': registerForm.phone,
+      'hashed_password': registerForm.password
+    })
+    if (success) {
+      // 注册成功，跳转到登录页
+      router.push('/login')
+    }
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
