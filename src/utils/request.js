@@ -44,18 +44,19 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data;
+    const data = response.data;
+    const status = String(response.status);
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (!status.startsWith('20')) {
       ElMessage({
-        message: res.message || 'Error',
+        message: data.message || 'Error',
         type: 'error',
         duration: 5 * 1000
       });
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (status === 50008 || status === 50012 || status === 50014) {
         // to re-login
         ElMessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
@@ -66,18 +67,18 @@ service.interceptors.response.use(
           location.reload();
         });
       }
-      return Promise.reject(new Error(res.message || 'Error'));
+      return Promise.reject(new Error(data.message || 'Error'));
     } else {
-      return res;
+      return response;
     }
   },
   error => {
-    console.log('err' + error); // for debug
-    ElMessage({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    });
+    // console.log('err' + error); // for debug
+    // ElMessage({
+    //   message: error.message,
+    //   type: 'error',
+    //   duration: 5 * 1000
+    // });
     return Promise.reject(error);
   }
 );

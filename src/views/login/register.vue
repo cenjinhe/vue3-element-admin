@@ -141,15 +141,27 @@ const handleRegister = async () => {
 
   loading.value = true
   try {
-    const success = await register({
+    await register({
       'user_name': registerForm.username,
       'phone': registerForm.phone,
       'hashed_password': registerForm.password
-    })
-    if (success) {
-      // 注册成功，跳转到登录页
+    }).then(respone => {
+      const message = '注册成功！前往登录'
+      ElMessage({
+        message: message,
+        type: 'success',
+        duration: 3 * 1000
+      });
       router.push('/login')
-    }
+    }).catch(error => {
+      console.error('注册失败详情：', error)
+      const message = error?.response?.data?.message || error.message || '注册失败'
+      ElMessage({
+        message: message,
+        type: 'warning',
+        duration: 5 * 1000
+      });
+    })
   } finally {
     loading.value = false
   }
