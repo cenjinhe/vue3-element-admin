@@ -93,10 +93,10 @@ const registerFormRef = ref(null)
 
 // 注册表单
 const registerForm = reactive({
-  username: 'admin',
-  phone: '18967262058',
-  password: '123abc',
-  confirmPassword: '123abc'
+  username: '',
+  phone: '',
+  password: '',
+  confirmPassword: ''
 })
 
 // 表单验证规则
@@ -106,7 +106,7 @@ const registerRules = reactive({
     { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
   ],
   phone: [
-    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { required: false, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
   ],
   password: [
