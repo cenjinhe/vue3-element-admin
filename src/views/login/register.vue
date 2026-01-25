@@ -93,7 +93,7 @@ const registerFormRef = ref(null)
 // 注册表单
 const registerForm = reactive({
   username: 'admin',
-  phone: '18767162058',
+  phone: '18967262058',
   password: '123abc',
   confirmPassword: '123abc'
 })
