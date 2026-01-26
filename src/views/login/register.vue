@@ -86,6 +86,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import store from '@/store'
+import SHA256 from 'crypto-js/sha256'
 
 const router = useRouter()
 const loading = ref(false)
@@ -154,7 +155,7 @@ const handleRegister = async () => {
     store.user().register({
       username: registerForm.username,
       phone: registerForm.phone,
-      password: registerForm.password
+      password: SHA256(registerForm.password).toString()
     })
       .then(respone => {
         const message = '注册成功！前往登录'

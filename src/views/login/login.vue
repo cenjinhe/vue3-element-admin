@@ -60,7 +60,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 // import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
-import { SHA256 } from 'crypto-js/sha256'
+import SHA256 from 'crypto-js/sha256'
 
 const router = useRouter()
 // const userStore = useUserStore()
