@@ -45,10 +45,10 @@ service.interceptors.response.use(
    */
   response => {
     const data = response.data;
-    const status = String(response.status);
+    const status = response.status ? response.status : null;
 
     // if the custom code is not 20000, it is judged as an error.
-    if (!status.startsWith('20')) {
+    if (status && !status.toString().startsWith('20')) {
       ElMessage({
         message: data.message || 'Error',
         type: 'error',

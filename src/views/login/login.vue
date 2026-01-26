@@ -55,10 +55,12 @@
 </template>
 
 <script setup>
+import { login } from '@/api/user'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 // import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
+import { SHA256 } from 'crypto-js/sha256'
 
 const router = useRouter()
 // const userStore = useUserStore()
@@ -67,9 +69,7 @@ const loginFormRef = ref(null)
 // 登录表单
 const loginForm = reactive({
   username: '',
-  password: '',
-  code: '',
-  remember: false
+  password: ''
 })
 
 // 表单验证规则
@@ -82,17 +82,6 @@ const loginRules = reactive({
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
   ]
-})
-
-// 初始化：读取记住的密码（示例）
-onMounted(() => {
-  const rememberUser = localStorage.getItem('rememberUser')
-  if (rememberUser) {
-    const { username, password } = JSON.parse(rememberUser)
-    loginForm.username = username
-    loginForm.password = password
-    loginForm.remember = true
-  }
 })
 
 // 显示密码
@@ -116,24 +105,26 @@ const handleLogin = async () => {
 
   loading.value = true
   try {
-    // 调用 Pinia 登录方法
-    // const success = await userStore.loginAction(loginForm)
-    // if (success) {
-    //   // 记住密码
-    //   if (loginForm.remember) {
-    //     localStorage.setItem(
-    //       'rememberUser',
-    //       JSON.stringify({
-    //         username: loginForm.username,
-    //         password: loginForm.password
-    //       })
-    //     )
-    //   } else {
-    //     localStorage.removeItem('rememberUser')
-    //   }
-      // 跳转到首页
+    await login({
+      'user_name': loginForm.username,
+      'hashed_password': SHA256(loginForm.password).toString()
+    }).then(respone => {
+      const message = '登录成功！跳转到首页'
+      ElMessage({
+        message: message,
+        type: 'dashboard',
+        duration: 3 * 1000
+      });
       router.push('/dashboard')
-    // }
+    }).catch(error => {
+      console.error('登录失败详情：', error)
+      const message = error?.response?.data?.message || error.message || '登录失败'
+      ElMessage({
+        message: message,
+        type: 'warning',
+        duration: 5 * 1000
+      });
+    })
   } finally {
     loading.value = false
   }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { login as apiLogin, logout as apiLogout, getInfo as apiGetInfo } from '@/api/user';
+import { login as apiLogin, register as apiRegister, logout as apiLogout, getInfo as apiGetInfo } from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 import router, { resetRouter } from '@/router';
 import tagsViewStore from './tagsView';
@@ -38,6 +38,20 @@ export default defineStore({
         }).catch(error => {
           reject(error);
         });
+      });
+    },
+
+    // user register
+    register(userInfo):Promise<void> {
+      const { username, phone, password } = userInfo;
+      return new Promise((resolve, reject) => {
+        console.log('username=', username)
+        apiRegister({ username: username.trim(), phone: phone, password: password })
+          .then(response => {
+            resolve();
+          }).catch(error => {
+            reject(error);
+          });
       });
     },
 

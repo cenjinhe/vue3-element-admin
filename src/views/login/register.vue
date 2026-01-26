@@ -27,7 +27,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input
             v-model="registerForm.phone"
-            placeholder="请输入手机号"
+            placeholder="请输入手机号(可选)"
             tabindex="1"
             autocomplete="new-password"
             size="large"
@@ -82,10 +82,10 @@
 </template>
 
 <script setup>
-import { register } from '@/api/user'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import store from '@/store'
 
 const router = useRouter()
 const loading = ref(false)
@@ -151,27 +151,29 @@ const handleRegister = async () => {
 
   loading.value = true
   try {
-    await register({
-      'user_name': registerForm.username,
-      'phone': registerForm.phone,
-      'hashed_password': registerForm.password
-    }).then(respone => {
-      const message = '注册成功！前往登录'
-      ElMessage({
-        message: message,
-        type: 'success',
-        duration: 3 * 1000
-      });
-      router.push('/login')
-    }).catch(error => {
-      console.error('注册失败详情：', error)
-      const message = error?.response?.data?.message || error.message || '注册失败'
-      ElMessage({
-        message: message,
-        type: 'warning',
-        duration: 5 * 1000
-      });
+    store.user().register({
+      username: registerForm.username,
+      phone: registerForm.phone,
+      password: registerForm.password
     })
+      .then(respone => {
+        const message = '注册成功！前往登录'
+        ElMessage({
+          message: message,
+          type: 'success',
+          duration: 3 * 1000
+        });
+        router.push('/login')
+      })
+      .catch(error => {
+        console.error('注册失败详情：', error)
+        const message = error?.response?.data?.message || error.message || '注册失败'
+        ElMessage({
+          message: message,
+          type: 'warning',
+          duration: 5 * 1000
+        });
+      })
   } finally {
     loading.value = false
   }
