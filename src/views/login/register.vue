@@ -1,13 +1,12 @@
 <template>
   <div class="register-container">
     <el-card class="register-card">
-      <h2 class="register-title">用户注册</h2>
+      <h2 class="register-title">{{ formTitle }}</h2>
       <el-form
         ref="registerFormRef"
         :model="registerForm"
         :rules="registerRules"
         label-width="80px"
-        class="register-form"
         autocomplete="off"
       >
         <el-form-item label="用户名" prop="username">
@@ -86,13 +85,13 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import store from '@/store'
-import SHA256 from 'crypto-js/sha256'
 
 const router = useRouter()
 const loading = ref(false)
 const registerFormRef = ref(null)
 
 // 注册表单
+const formTitle = ref('用户注册')
 const registerForm = reactive({
   username: '',
   phone: '',
@@ -155,26 +154,26 @@ const handleRegister = async () => {
     store.user().register({
       username: registerForm.username,
       phone: registerForm.phone,
-      password: SHA256(registerForm.password).toString()
+      password: registerForm.password
     })
-      .then(respone => {
-        const message = '注册成功！前往登录'
-        ElMessage({
-          message: message,
-          type: 'success',
-          duration: 3 * 1000
-        });
-        router.push('/login')
-      })
-      .catch(error => {
-        console.error('注册失败详情：', error)
-        const message = error?.response?.data?.message || error.message || '注册失败'
-        ElMessage({
-          message: message,
-          type: 'warning',
-          duration: 5 * 1000
-        });
-      })
+    .then(respone => {
+      const message = '注册成功！前往登录'
+      ElMessage({
+        message: message,
+        type: 'success',
+        duration: 3 * 1000
+      });
+      router.push('/login')
+    })
+    .catch(error => {
+      console.error('注册失败详情：', error)
+      const message = error?.response?.data?.message || error.message || '注册失败'
+      ElMessage({
+        message: message,
+        type: 'warning',
+        duration: 5 * 1000
+      });
+    })
   } finally {
     loading.value = false
   }
@@ -216,10 +215,6 @@ $dark_gray: #889aa4;
   user-select: none;
 }
 
-.register-form {
-  /*margin-top: 20px;*/
-}
-
 .login-link {
   float: right;
 }
@@ -232,5 +227,31 @@ $dark_gray: #889aa4;
   width: 100%;
   height: 40px;
   font-size: 16px;
+}
+
+// ========== 去掉浏览器 autofill 蓝色背景 ==========
+:deep(.el-input) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #333 !important;
+    transition: background-color 5000s ease-in-out 0s;
+    border-color: #dcdfe6 !important;
+  }
+  input:autofill,
+  input:autofill:hover,
+  input:autofill:focus {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    border-color: #dcdfe6 !important;
+  }
+}
+
+:deep(.el-input__wrapper) {
+  --el-input-focus-border-color: #409eff !important;
+  --el-input-hover-border-color: #c0c4cc !important;
+  background-color: #ffffff !important;
 }
 </style>

@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia';
-import { login as apiLogin, register as apiRegister, logout as apiLogout, getInfo as apiGetInfo } from '@/api/user';
+import { 
+  login as apiLogin,
+  register as apiRegister,
+  logout as apiLogout,
+  getInfo as apiGetInfo
+} from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 import router, { resetRouter } from '@/router';
 import tagsViewStore from './tagsView';
 import permissionStore from './permission';
+import SHA256 from 'crypto-js/sha256';
 
 export interface IUserState {
   token: string;
@@ -30,7 +36,8 @@ export default defineStore({
     login(userInfo):Promise<void> {
       const { username, password } = userInfo;
       return new Promise((resolve, reject) => {
-        apiLogin({ username: username.trim(), password: password }).then(response => {
+        apiLogin({ username: username.trim(), password: SHA256(password).toString() })
+        .then(response => {
           const { data } = response;
           this.token = data.token;
           setToken(data.token);
@@ -42,16 +49,16 @@ export default defineStore({
     },
 
     // user register
-    register(userInfo):Promise<void> {
+    register(userInfo) {
       const { username, phone, password } = userInfo;
       return new Promise((resolve, reject) => {
         console.log('username=', username)
-        apiRegister({ username: username.trim(), phone: phone, password: password })
-          .then(response => {
-            resolve();
-          }).catch(error => {
-            reject(error);
-          });
+        apiRegister({ username: username.trim(), phone: phone, password: SHA256(password).toString() })
+        .then(response => {
+          resolve(response);
+        }).catch(error => {
+          reject(error);
+        });
       });
     },
 

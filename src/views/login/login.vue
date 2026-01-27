@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-card class="login-card">
-      <h2 class="login-title">系统登录</h2>
+      <h2 class="login-title">{{ formTitle }}</h2>
       <el-form
         ref="loginFormRef"
         :model="loginForm"
@@ -60,13 +60,13 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 // import { useUserStore } from '@/store/modules/user'
 import { ElMessage } from 'element-plus'
-import SHA256 from 'crypto-js/sha256'
 
 const router = useRouter()
 // const userStore = useUserStore()
 const loginFormRef = ref(null)
 
 // 登录表单
+const formTitle = ref('用户登录')
 const loginForm = reactive({
   username: '',
   password: ''
@@ -105,10 +105,7 @@ const handleLogin = async () => {
 
   loading.value = true
   try {
-    await login({
-      'user_name': loginForm.username,
-      'hashed_password': SHA256(loginForm.password).toString()
-    }).then(respone => {
+    await login(loginForm).then(respone => {
       const message = '登录成功！跳转到首页'
       ElMessage({
         message: message,
@@ -184,25 +181,17 @@ $dark_gray: #889aa4;
   font-size: 16px;
 }
 
-// ========== 新增：去掉浏览器 autofill 蓝色背景 ==========
-// 覆盖 Element Plus 输入框的 autofill 样式
+// ========== 去掉浏览器 autofill 蓝色背景 ==========
 :deep(.el-input) {
-  // 1. 基础 autofill 样式（大部分浏览器）
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    // 去掉蓝色背景（设置为和输入框默认背景一致）
     -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-    // 去掉文字颜色变化（可选，保持默认黑色）
     -webkit-text-fill-color: #333 !important;
-    // 禁用过渡动画（避免闪烁）
     transition: background-color 5000s ease-in-out 0s;
-    // 重置边框（如果有蓝色边框也会被覆盖）
     border-color: #dcdfe6 !important;
   }
-
-  // 2. 兼容火狐/Edge 浏览器
   input:autofill,
   input:autofill:hover,
   input:autofill:focus {
@@ -212,10 +201,9 @@ $dark_gray: #889aa4;
   }
 }
 
-// 3. 聚焦时也保持样式统一（可选，避免聚焦后又出现特殊样式）
 :deep(.el-input__wrapper) {
-  --el-input-focus-border-color: #409eff !important; // 保留 Element 原生聚焦边框色
-  --el-input-hover-border-color: #c0c4cc !important; // 保留 hover 边框色
-  background-color: #ffffff !important; // 确保输入框背景始终为白色
+  --el-input-focus-border-color: #409eff !important;
+  --el-input-hover-border-color: #c0c4cc !important;
+  background-color: #ffffff !important;
 }
 </style>
