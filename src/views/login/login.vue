@@ -122,7 +122,7 @@ const handleLogin = async () => {
         const message = "登录成功！跳转到首页";
         ElMessage({
           message: message,
-          type: "dashboard",
+          type: "success",
           duration: 5 * 1000,
         });
         router.push("/dashboard");

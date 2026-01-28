@@ -186,7 +186,7 @@ const handleRegister = async () => {
         ElMessage({
           message: message,
           type: "success",
-          duration: 3 * 1000,
+          duration: 5 * 1000,
         });
         router.push("/login");
       })

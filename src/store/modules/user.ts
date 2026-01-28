@@ -66,23 +66,24 @@ export default defineStore({
     getInfo() {
       return new Promise((resolve, reject) => {
         apiGetInfo(this.token).then(response => {
+          console.log('response=', response)
           const { data } = response;
 
-          // if (!data) {
-          //   reject('Verification failed, please Login again.');
-          // }
+          if (!data) {
+            reject('Verification failed, please Login again.');
+          }
 
-          // const { roles, name, avatar, introduction } = data;
+          const { roles, name, avatar, introduction } = data;
 
-          // // roles must be a non-empty array
-          // if (!roles || roles.length <= 0) {
-          //   reject('getInfo: roles must be a non-null array!');
-          // }
+          // roles must be a non-empty array
+          if (!roles || roles.length <= 0) {
+            reject('getInfo: roles must be a non-null array!');
+          }
 
-          // this.roles = roles;
-          // this.name = name;
-          // this.avatar = avatar;
-          // this.introduction = introduction;
+          this.roles = roles;
+          this.name = name;
+          this.avatar = avatar;
+          this.introduction = introduction;
           resolve(data);
         }).catch(error => {
           reject(error);
