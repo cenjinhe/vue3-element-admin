@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export function login(data) {
   return request({
-    url: '/api/user/login/',
+    url: '/cjh/user/api/login/',
     method: 'post',
     data
   });
@@ -10,24 +10,24 @@ export function login(data) {
 
 export function register(data) {
   return request({
-    url: '/api/user/register/',
+    url: '/cjh/user/api/register/',
     method: 'post',
     data
   });
 }
 
-export function getInfo(token) {
+export function logout(token) {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
+    url: '/cjh/user/api/logout/',
+    method: 'post',
     params: { token }
   });
 }
 
-export function logout(token) {
+export function getInfo(token) {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post',
+    url: '/cjh/user/api/get_user_info/',
+    method: 'get',
     params: { token }
   });
 }

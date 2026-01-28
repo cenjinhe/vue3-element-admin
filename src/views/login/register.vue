@@ -20,7 +20,7 @@
             size="large"
             clearable
             readonly
-            @focus="e => e.target.removeAttribute('readonly')"
+            @focus="(e) => e.target.removeAttribute('readonly')"
           />
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
@@ -31,7 +31,7 @@
             autocomplete="new-password"
             size="large"
             readonly
-            @focus="e => e.target.removeAttribute('readonly')"
+            @focus="(e) => e.target.removeAttribute('readonly')"
           />
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -44,7 +44,9 @@
             size="large"
           />
           <span class="show-pwd" @click="showPwd(0)">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+            />
           </span>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
@@ -57,7 +59,11 @@
             size="large"
           />
           <span class="show-pwd" @click="showPwd(1)">
-            <svg-icon :icon-class="confirmPasswordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon
+              :icon-class="
+                confirmPasswordType === 'password' ? 'eye' : 'eye-open'
+              "
+            />
           </span>
         </el-form-item>
         <el-form-item class="register-btn-item">
@@ -81,103 +87,123 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import store from '@/store'
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import store from "@/store";
 
-const router = useRouter()
-const loading = ref(false)
-const registerFormRef = ref(null)
+const router = useRouter();
+const loading = ref(false);
+const registerFormRef = ref(null);
 
 // 注册表单
-const formTitle = ref('用户注册')
+const formTitle = ref("用户注册");
 const registerForm = reactive({
-  username: '',
-  phone: '',
-  password: '',
-  confirmPassword: ''
-})
+  username: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+});
 
 // 表单验证规则
 const registerRules = reactive({
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    {
+      min: 3,
+      max: 20,
+      message: "用户名长度在 3 到 20 个字符",
+      trigger: "blur",
+    },
   ],
   phone: [
-    { required: false, message: '请输入手机号', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+    { required: false, message: "请输入手机号", trigger: "blur" },
+    {
+      pattern: /^1[3-9]\d{9}$/,
+      message: "请输入正确的手机号",
+      trigger: "blur",
+    },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' },
-    { pattern: /^(?=.*[a-zA-Z])(?=.*\d).+$/, message: '密码需包含字母和数字', trigger: 'blur' }
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
+    {
+      pattern: /^(?=.*[a-zA-Z])(?=.*\d).+$/,
+      message: "密码需包含字母和数字",
+      trigger: "blur",
+    },
   ],
   confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
+    { required: true, message: "请确认密码", trigger: "blur" },
     {
       validator: (rule, value, callback) => {
         if (value !== registerForm.password) {
-          callback(new Error('两次输入的密码不一致'))
+          callback(new Error("两次输入的密码不一致"));
         } else {
-          callback()
+          callback();
         }
       },
-      trigger: 'blur'
-    }
-  ]
-})
+      trigger: "blur",
+    },
+  ],
+});
 
 // 显示密码
-const passwordType = ref('password')
-const confirmPasswordType = ref('password')
+const passwordType = ref("password");
+const confirmPasswordType = ref("password");
 const showPwd = (idx) => {
   // 切换值
-  if (idx === 0) passwordType.value = passwordType.value === 'password' ? 'text' : 'password'
-  if (idx === 1) confirmPasswordType.value = confirmPasswordType.value === 'password' ? 'text' : 'password'
-}
+  if (idx === 0)
+    passwordType.value =
+      passwordType.value === "password" ? "text" : "password";
+  if (idx === 1)
+    confirmPasswordType.value =
+      confirmPasswordType.value === "password" ? "text" : "password";
+};
 
 // 跳转到登录页
 const goToLogin = () => {
-  router.push('/login')
-}
+  router.push("/login");
+};
 
 // 注册处理
 const handleRegister = async () => {
   // 表单验证
-  const valid = await registerFormRef.value.validate()
-  if (!valid) return
+  const valid = await registerFormRef.value.validate();
+  if (!valid) return;
 
-  loading.value = true
+  loading.value = true;
   try {
-    store.user().register({
-      username: registerForm.username,
-      phone: registerForm.phone,
-      password: registerForm.password
-    })
-    .then(respone => {
-      const message = '注册成功！前往登录'
-      ElMessage({
-        message: message,
-        type: 'success',
-        duration: 3 * 1000
+    store
+      .user()
+      .register({
+        username: registerForm.username,
+        phone: registerForm.phone,
+        password: registerForm.password,
+      })
+      .then((respone) => {
+        const message = "注册成功！前往登录";
+        ElMessage({
+          message: message,
+          type: "success",
+          duration: 3 * 1000,
+        });
+        router.push("/login");
+      })
+      .catch((error) => {
+        console.error("注册失败详情：", error);
+        const message =
+          error?.response?.data?.message || error.message || "注册失败";
+        ElMessage({
+          message: message,
+          type: "warning",
+          duration: 5 * 1000,
+        });
       });
-      router.push('/login')
-    })
-    .catch(error => {
-      console.error('注册失败详情：', error)
-      const message = error?.response?.data?.message || error.message || '注册失败'
-      ElMessage({
-        message: message,
-        type: 'warning',
-        duration: 5 * 1000
-      });
-    })
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

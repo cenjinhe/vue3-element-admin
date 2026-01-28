@@ -39,8 +39,8 @@ export default defineStore({
         apiLogin({ username: username.trim(), password: SHA256(password).toString() })
         .then(response => {
           const { data } = response;
-          this.token = data.token;
-          setToken(data.token);
+          this.token = data.access_token;
+          setToken(this.token);
           resolve();
         }).catch(error => {
           reject(error);
@@ -68,21 +68,21 @@ export default defineStore({
         apiGetInfo(this.token).then(response => {
           const { data } = response;
 
-          if (!data) {
-            reject('Verification failed, please Login again.');
-          }
+          // if (!data) {
+          //   reject('Verification failed, please Login again.');
+          // }
 
-          const { roles, name, avatar, introduction } = data;
+          // const { roles, name, avatar, introduction } = data;
 
-          // roles must be a non-empty array
-          if (!roles || roles.length <= 0) {
-            reject('getInfo: roles must be a non-null array!');
-          }
+          // // roles must be a non-empty array
+          // if (!roles || roles.length <= 0) {
+          //   reject('getInfo: roles must be a non-null array!');
+          // }
 
-          this.roles = roles;
-          this.name = name;
-          this.avatar = avatar;
-          this.introduction = introduction;
+          // this.roles = roles;
+          // this.name = name;
+          // this.avatar = avatar;
+          // this.introduction = introduction;
           resolve(data);
         }).catch(error => {
           reject(error);

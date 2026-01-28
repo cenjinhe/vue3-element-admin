@@ -18,7 +18,7 @@
             size="large"
             autocomplete="on"
             readonly
-            @focus="e => e.target.removeAttribute('readonly')"
+            @focus="(e) => e.target.removeAttribute('readonly')"
           />
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -31,7 +31,9 @@
             size="large"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+            />
           </span>
         </el-form-item>
         <el-form-item class="login-btn-item">
@@ -55,77 +57,90 @@
 </template>
 
 <script setup>
-import { login } from '@/api/user'
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-// import { useUserStore } from '@/store/modules/user'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import store from "@/store";
 
-const router = useRouter()
-// const userStore = useUserStore()
-const loginFormRef = ref(null)
+const router = useRouter();
+const loginFormRef = ref(null);
 
 // 登录表单
-const formTitle = ref('用户登录')
+const formTitle = ref("用户登录");
 const loginForm = reactive({
-  username: '',
-  password: ''
-})
+  username: "",
+  password: "",
+});
 
 // 表单验证规则
 const loginRules = reactive({
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    {
+      min: 3,
+      max: 20,
+      message: "用户名长度在 3 到 20 个字符",
+      trigger: "blur",
+    },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
-  ]
-})
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
+    {
+      pattern: /^(?=.*[a-zA-Z])(?=.*\d).+$/,
+      message: "密码需包含字母和数字",
+      trigger: "blur",
+    },
+  ],
+});
 
 // 显示密码
-const passwordType = ref('password')
+const passwordType = ref("password");
 const showPwd = () => {
   // 切换值
-  passwordType.value = passwordType.value === 'password' ? 'text' : 'password'
-}
+  passwordType.value = passwordType.value === "password" ? "text" : "password";
+};
 
 // 跳转到注册页
 const goToRegister = () => {
-  router.push('/register')
-}
+  router.push("/register");
+};
 
 // 登录处理
-const loading = ref(false)
+const loading = ref(false);
 const handleLogin = async () => {
   // 表单验证
-  const valid = await loginFormRef.value.validate()
-  if (!valid) return
+  const valid = await loginFormRef.value.validate();
+  if (!valid) return;
 
-  loading.value = true
+  loading.value = true;
   try {
-    await login(loginForm).then(respone => {
-      const message = '登录成功！跳转到首页'
-      ElMessage({
-        message: message,
-        type: 'dashboard',
-        duration: 3 * 1000
+    store
+      .user()
+      .login(loginForm)
+      .then((respone) => {
+        const message = "登录成功！跳转到首页";
+        ElMessage({
+          message: message,
+          type: "dashboard",
+          duration: 5 * 1000,
+        });
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+        console.error("登录失败详情：", error);
+        const message =
+          error?.response?.data?.message || error.message || "登录失败";
+        ElMessage({
+          message: message,
+          type: "warning",
+          duration: 5 * 1000,
+        });
       });
-      router.push('/dashboard')
-    }).catch(error => {
-      console.error('登录失败详情：', error)
-      const message = error?.response?.data?.message || error.message || '登录失败'
-      ElMessage({
-        message: message,
-        type: 'warning',
-        duration: 5 * 1000
-      });
-    })
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

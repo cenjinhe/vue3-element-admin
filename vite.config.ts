@@ -84,7 +84,7 @@ export default defineConfig(({ command, mode }) => {
       host: '127.0.0.1',
       port: 8001,
       proxy: {
-        '/api': {
+        '^/cjh/[^/]+/api': {
           target: 'http://127.0.0.1:5000',
           changeOrigin: true,
           // rewrite: (path) => path.replace(/^\/api-test/, ''),
