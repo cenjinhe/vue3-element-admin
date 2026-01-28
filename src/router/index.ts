@@ -390,6 +390,12 @@ export const asyncRoutes:RouteRecordRaw[] = [
         component: () => import('@/views/mydemo/StoreDemo.vue'),
         name: 'StoreDemo',
         meta: { title: 'Store 示例', icon: 'lock' }
+      },
+      {
+        path: 'dashboard-demo',
+        component: () => import('@/views/mydemo/DashboardDemo.vue'),
+        name: 'DashboardDemo',
+        meta: { title: 'Dashboard 示例', icon: 'lock' }
       }
     ]
   },
