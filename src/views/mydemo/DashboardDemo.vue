@@ -27,6 +27,24 @@
         <h3>销量趋势统计</h3>
         <div ref="lineChart" class="chart" style="width: 100%; height: 400px;"></div>
       </div>
+
+      <!-- 仪表图 -->
+      <div class="chart-item">
+        <h3>仪表图</h3>
+        <gauge-chart
+          :value="completionRate"
+          indicator-name=""
+          :range="[0, 100]"
+          :colors="[]"
+          :pointer-show=false
+          :progress="{show: true, width: 30}"
+          :offsetCenter="['0', '0%']"
+          :center="['50%', '60%']"
+          split-number="1"
+          width="100%"
+          height="400px"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -35,7 +53,9 @@
 import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
+import GaugeChart from '@/components/Charts/GaugeChart.vue'
 
+const completionRate = ref(80)
 // 图表实例引用
 const pieChart = ref(null)
 const barChart = ref(null)
