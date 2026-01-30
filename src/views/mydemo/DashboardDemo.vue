@@ -50,10 +50,10 @@
 </template>
 
 <script setup>
+import GaugeChart from '@/components/Charts/GaugeChart'
 import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
-import GaugeChart from '@/components/Charts/GaugeChart.vue'
 
 const completionRate = ref(80)
 // 图表实例引用

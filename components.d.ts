@@ -62,6 +62,7 @@ declare module 'vue' {
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     ErrorLog: typeof import('./src/components/ErrorLog/index.vue')['default']
+    GaugeChart: typeof import('./src/components/Charts/GaugeChart.vue')['default']
     GithubCorner: typeof import('./src/components/GithubCorner/index.vue')['default']
     Hamburger: typeof import('./src/components/Hamburger/index.vue')['default']
     HeaderSearch: typeof import('./src/components/HeaderSearch/index.vue')['default']
