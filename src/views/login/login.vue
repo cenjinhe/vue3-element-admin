@@ -68,8 +68,8 @@ const loginFormRef = ref(null);
 // 登录表单
 const formTitle = ref("用户登录");
 const loginForm = reactive({
-  username: "",
-  password: "",
+  username: "test",
+  password: "123abc",
 });
 
 // 表单验证规则
