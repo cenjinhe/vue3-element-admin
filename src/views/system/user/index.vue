@@ -63,9 +63,9 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="create_time" label="创建时间" min-width="200">
+      <el-table-column prop="created_at" label="创建时间" min-width="200">
         <template #default="scope">
-          {{ parseTime(scope.row.create_time, "{y}-{m}-{d} {h}:{i}:{s}") }}
+          {{ parseTime(scope.row.created_at, "{y}-{m}-{d} {h}:{i}:{s}") }}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="200" fixed="right">
@@ -251,7 +251,7 @@ const getUserList = async () => {
       phone: searchForm.phone || undefined,
     };
     const res = await userApi.getUserList(params);
-    userList.value = res.results;
+    userList.value = res.data;
     total.value = res.count;
   } catch (err: any) {
     ElMessage.error(err.response?.data?.detail || "获取用户列表失败");
