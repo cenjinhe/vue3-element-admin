@@ -11,6 +11,7 @@ import componentsRouter from './modules/components';
 import chartsRouter from './modules/charts';
 import nestedRouter from './modules/nested';
 import tableRouter from './modules/table';
+import systemRouter from './modules/system';
 
 /**
  * constantRoutes
@@ -117,6 +118,9 @@ export const constantRoutes:RouteRecordRaw[] = [
  * 注意：hidden、alwaysShow 属性配置移动到了meta中！！！
  */
 export const asyncRoutes:RouteRecordRaw[] = [
+  /* 系统管理 菜单 */
+  systemRouter,
+
   {
     path: '/permission',
     component: Layout,

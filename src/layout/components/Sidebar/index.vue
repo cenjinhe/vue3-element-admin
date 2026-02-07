@@ -18,7 +18,6 @@
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
-        :default-openeds="defaultOpenedMenus"
       >
         <!-- 循环渲染菜单项：基于权限过滤后的路由列表 -->
         <sidebar-item
