@@ -64,8 +64,6 @@ install_nginx() {
             echo "不支持的操作系统, 请手动安装nginx"
             exit 0
         fi
-    else
-        echo "ℹ️  nginx已安装"
     fi
 }
 
@@ -94,12 +92,13 @@ startup_nginx() {
         fi
     fi
 
+    # 第三步：启动 nginx 服务
     nginx -c "$NGINX_CONFIG_PATH" || { echo "启动nginx失败"; exit 0; }
     echo "✅ nginx启动成功"
     echo "🚀 访问服务: http://${RUN_HOST}:$LISTEN_PORT/#/login"
 }
 
-# ===================== 基础配置 =====================
+# ===================== 基础配置 =============================
 SCRIPT_DIR=$(cd "$(dirname "${0}")" && pwd)
 NODE_MODULES_DIR="$SCRIPT_DIR/node_modules"
 WEB_ROOT="/opt/homebrew/var/www/vue3-element-admin"
@@ -109,13 +108,13 @@ LISTEN_PORT="9200"  # Nginx 配置的监听端口
 
 # ===================== 主流程 ===============================
 # 开发模式连接测试服务器
-# check_node
-# install_node_modules
-# dev_vue_project
-
-# 打包到测试服务器
 check_node
 install_node_modules
-build_vue_project
-install_nginx
-startup_nginx
+dev_vue_project
+
+# 打包到测试服务器
+# check_node
+# install_node_modules
+# build_vue_project
+# install_nginx
+# startup_nginx
