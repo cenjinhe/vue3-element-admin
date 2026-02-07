@@ -70,7 +70,7 @@ install_nginx() {
 # ===================== 重启nginx（带上config参数） =============
 startup_nginx() {
     NGINX_CONFIG_PATH="$SCRIPT_DIR/nginx.conf"
-    echo "🔧 正在nginx服务"
+    echo "🔧 正在启动nginx服务"
     # 第一步：停止现有 Nginx 进程
     if pgrep -x "nginx" > /dev/null; then
         echo "🔧 停止nginx服务"
@@ -105,16 +105,23 @@ WEB_ROOT="/opt/homebrew/var/www/vue3-element-admin"
 RUN_HOST="127.0.0.1"
 RUN_PORT="8001"
 LISTEN_PORT="9200"  # Nginx 配置的监听端口
+MODE=$1  # dev: 开发模式, prod: 生产模式
 
 # ===================== 主流程 ===============================
-# 开发模式连接测试服务器
 check_node
 install_node_modules
-dev_vue_project
-
-# 打包到测试服务器
-# check_node
-# install_node_modules
-# build_vue_project
-# install_nginx
-# startup_nginx
+if [[ "$MODE" == "prod" ]]; then
+    echo "⚠️  生产模式: 将编译vue项目并部署到nginx"
+    build_vue_project
+    install_nginx
+    startup_nginx
+elif [[ "$MODE" == "dev" ]]; then
+    echo "⚠️  开发模式: 将直接启动vue开发服务器"
+    dev_vue_project
+else
+    echo "❌  未指定模式, 请使用模式，如下:
+    ./start_server.sh dev
+    ./start_server.sh prod
+    其中 dev: 开发模式, prod: 生产模式"
+    exit 0
+fi
