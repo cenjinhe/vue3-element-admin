@@ -10,7 +10,7 @@
         />
       </el-form-item>
       <el-form-item label="角色">
-        <el-select v-model="searchForm.role" placeholder="请选择角色" clearable>
+        <el-select v-model="searchForm.role" placeholder="请选择角色" clearable style="inline-size: 150px;">
           <el-option label="超级管理员" value="admin" />
           <el-option label="编辑" value="editor" />
           <el-option label="查看者" value="viewer" />
@@ -128,7 +128,7 @@
           <el-input
             v-model="userForm.password"
             type="password"
-            placeholder="请输入密码（不少于6位）"
+            placeholder="请输入密码(不少于6位)"
           />
         </el-form-item>
         <el-form-item label="密码" v-if="isEdit">
