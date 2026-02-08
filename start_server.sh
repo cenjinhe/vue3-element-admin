@@ -119,9 +119,9 @@ elif [[ "$MODE" == "dev" ]]; then
     echo "⚠️  开发模式: 将直接启动vue开发服务器"
     dev_vue_project
 else
-    echo "❌  未指定模式, 请使用模式，如下:
-    ./start_server.sh dev
-    ./start_server.sh prod
+    echo "❌  未指定模式, 请使用如下命令:
+     ./start_server.sh dev
+     ./start_server.sh prod
     其中 dev: 开发模式, prod: 生产模式"
     exit 0
 fi
