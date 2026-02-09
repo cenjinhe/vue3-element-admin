@@ -1,27 +1,54 @@
 <template>
   <div class="table-page">
-    <!-- 表格：绑定分页后的数据 -->
-    <el-table :data="tableDataSlice" border style="width: 100%">
-      <!-- 示例列：根据实际业务定义 -->
+    <!-- 搜索和过滤区域 -->
+    <div
+      class="search-bar"
+      style="margin-bottom: 16px; display: flex; gap: 16px; align-items: center"
+    >
+      <!-- 名称搜索框 -->
+      <el-input
+        v-model="nameSearch"
+        placeholder="请输入名称搜索"
+        clearable
+        style="width: 200px"
+        @input="handleSearch"
+      />
+      <!-- 状态过滤下拉框 -->
+      <el-select
+        v-model="statusFilter"
+        placeholder="请选择状态过滤"
+        clearable
+        style="width: 150px"
+        @change="handleFilter"
+      >
+        <el-option label="全部" value="" />
+        <el-option label="正常" value="正常" />
+        <el-option label="禁用" value="禁用" />
+      </el-select>
+    </div>
+
+    <!-- 表格：绑定分页后的数据，添加排序事件 -->
+    <el-table
+      :data="tableDataSlice"
+      border
+      style="width: 100%"
+      :default-sort="{ prop: 'id', order: 'ascending' }"
+      @sort-change="handleSortChange"
+    >
+      <!-- ID列：默认排序 -->
       <el-table-column label="ID" prop="id" align="center" />
-      <el-table-column label="名称" prop="name" align="center" />
-      <el-table-column label="状态" prop="status" align="center" />
+      <!-- 名称列：排序 + 搜索 -->
+      <el-table-column label="名称" prop="name" align="center" sortable />
+      <!-- 状态列：排序 + 过滤 -->
+      <el-table-column label="状态" prop="status" align="center" sortable />
     </el-table>
 
-    <!-- 分页器：控制每页10行 -->
+    <!-- 分页器：保持原有分页逻辑 -->
     <div class="pagination" style="margin-top: 16px; text-align: right">
-      <!-- 绑定当前页码 -->
-      <!-- 绑定每页条数（设为10） -->
-      <!-- 总数据量 -->
-      <!-- 可选每页条数（默认选中10） -->
-      <!-- 分页器布局 -->
-      <!-- 每页条数改变时触发 -->
-      <!-- 每页条数改变时触发 -->
-      <!-- 页码改变时触发 -->
       <el-pagination
         :current-page="currentPage"
         :page-size="pageSize"
-        :total="tableData.length"
+        :total="filteredTableData.length"
         :page-sizes="[10, 20, 30]"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
@@ -52,38 +79,88 @@ const tableData = ref([
   { id: 14, name: "数据14", status: "正常" },
   { id: 15, name: "数据15", status: "禁用" },
   { id: 16, name: "数据16", status: "正常" },
-  // ... 可添加更多测试数据（建议超过10条，方便看分页效果）
 ]);
 
 // 2. 分页核心变量
-const currentPage = ref(1); // 当前页码（默认第1页）
-const pageSize = ref(10); // 每页条数（固定为10，也可通过分页器切换）
+const currentPage = ref(1); // 当前页码
+const pageSize = ref(10); // 每页条数
 
-// 3. 计算属性：获取当前页要显示的数据（切片处理）
-const tableDataSlice = computed(() => {
-  // 起始索引 = (当前页码 - 1) * 每页条数
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  // 结束索引 = 起始索引 + 每页条数
-  const endIndex = startIndex + pageSize.value;
-  // 返回当前页数据（slice 不改变原数组）
-  return tableData.value.slice(startIndex, endIndex);
+// 3. 搜索/过滤/排序相关变量
+const nameSearch = ref(""); // 名称搜索关键词
+const statusFilter = ref(""); // 状态过滤值
+const sortProp = ref("id"); // 排序字段
+const sortOrder = ref("ascending"); // 排序方向（ascending/descending）
+
+// 4. 第一步：过滤数据（先过滤搜索和筛选条件）
+const filteredTableData = computed(() => {
+  let result = [...tableData.value];
+
+  // 名称搜索过滤（模糊匹配）
+  if (nameSearch.value) {
+    result = result.filter((item) =>
+      item.name.toLowerCase().includes(nameSearch.value.toLowerCase())
+    );
+  }
+
+  // 状态过滤（精确匹配）
+  if (statusFilter.value) {
+    result = result.filter((item) => item.status === statusFilter.value);
+  }
+
+  // 排序处理
+  result.sort((a, b) => {
+    if (sortOrder.value === "ascending") {
+      return a[sortProp.value] > b[sortProp.value] ? 1 : -1;
+    } else {
+      return a[sortProp.value] < b[sortProp.value] ? 1 : -1;
+    }
+  });
+
+  return result;
 });
 
-// 4. 分页器事件：每页条数改变时更新页码（避免数据超出）
-const handleSizeChange = (val) => {
-  pageSize.value = val; // 更新每页条数
-  currentPage.value = 1; // 重置为第1页
+// 5. 第二步：分页处理（基于过滤排序后的数据）
+const tableDataSlice = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return filteredTableData.value.slice(startIndex, endIndex);
+});
+
+// 6. 事件处理函数
+// 名称搜索事件
+const handleSearch = () => {
+  currentPage.value = 1; // 搜索后重置为第一页
 };
 
-// 5. 分页器事件：页码改变时触发（自动更新表格数据，因 tableDataSlice 依赖 currentPage）
+// 状态过滤事件
+const handleFilter = () => {
+  currentPage.value = 1; // 过滤后重置为第一页
+};
+
+// 排序事件
+const handleSortChange = (sort) => {
+  sortProp.value = sort.prop; // 更新排序字段
+  sortOrder.value = sort.order; // 更新排序方向
+  currentPage.value = 1; // 排序后重置为第一页
+};
+
+// 每页条数改变事件
+const handleSizeChange = (val) => {
+  pageSize.value = val;
+  currentPage.value = 1; // 切换每页条数后重置为第一页
+};
+
+// 页码改变事件
 const handleCurrentChange = (val) => {
   currentPage.value = val;
 };
 </script>
 
 <style scoped>
-/* 可选：调整分页器样式 */
 .pagination {
   padding-right: 20px;
+}
+.search-bar {
+  padding-left: 20px;
 }
 </style>
