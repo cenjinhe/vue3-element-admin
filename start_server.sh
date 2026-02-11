@@ -29,8 +29,8 @@ build_vue_project() {
 
     echo "🔧 正在移动dist到$WEB_ROOT"
     mkdir -p "$WEB_ROOT" || { echo "创建WEB_ROOT目录失败"; exit 0; }
-    rm -rf "$WEB_ROOT/dist" || { echo "清理旧dist目录失败"; exit 0; }
-    mv "$SCRIPT_DIR/dist" "$WEB_ROOT/" || { echo "移动dist目录失败"; exit 0; }
+    cp -r "$SCRIPT_DIR/dist" "$WEB_ROOT/" || { echo "复制dist目录失败"; exit 0; }
+    rm -rf "$SCRIPT_DIR/dist" || { echo "清理dist目录失败"; exit 0; }
 }
 
 # ===================== 启动服务 ===============================
