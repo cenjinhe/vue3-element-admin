@@ -68,7 +68,7 @@ const loginFormRef = ref(null);
 // 登录表单
 const formTitle = ref("用户登录");
 const loginForm = reactive({
-  username: "test",
+  username: "admin",
   password: "123abc",
 });
 
